@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>12-Week Training Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --surface2: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #888;
+      --dim: #555;
+      --red: #e94560;
+      --blue: #00b4d8;
+      --red-bg: rgba(233,69,96,0.12);
+      --blue-bg: rgba(0,180,216,0.12);
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1a0808 0%, #0d0d1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 20px 24px;
+    }
+    .header-inner { max-width: 560px; margin: 0 auto; }
+    .eyebrow {
+      font-size: 10px; letter-spacing: 4px; color: var(--red);
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+    .title {
+      font-family: 'Barlow', sans-serif;
+      font-size: 28px; font-weight: 900;
+      letter-spacing: -1px; line-height: 1.1;
+    }
+    .subtitle { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+    .stats { display: flex; gap: 10px; margin-top: 20px; }
+    .stat {
+      flex: 1; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; text-align: center;
+    }
+    .stat-val { font-family: 'Barlow', sans-serif; font-size: 20px; font-weight: 900; color: var(--red); }
+    .stat-label { font-size: 9px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+    /* MAIN */
+    .main { max-width: 560px; margin: 0 auto; padding: 20px 16px 80px; }
+
+    /* SECTION LABEL */
+    .section-label {
+      font-size: 9px; letter-spacing: 3px; color: var(--dim);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+
+    /* PHASE TABS */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 10px 6px; border-radius: 10px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--dim); font-family: 'DM Mono', monospace;
+      font-size: 10px; font-weight: 500; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+    }
+    .phase-tab.active {
+      border-color: var(--red); background: var(--red-bg); color: var(--red);
+    }
+    .phase-tab-sub { font-size: 9px; color: var(--dim); margin-top: 3px; }
+    .phase-tab.active .phase-tab-sub { color: var(--red); opacity: 0.7; }
+
+    /* DAY TABS */
+    .day-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .day-tab {
+      flex: 1; padding: 8px 2px; border-radius: 8px;
+      border: 1px solid #1e1e1e; background: transparent;
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; text-align: center;
+      color: #3a3a3a;
+    }
+    .day-tab .dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #2a2a2a; margin: 4px auto 0;
+    }
+    .day-tab.active-strength { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+    .day-tab.active-strength .dot { background: var(--red); }
+    .day-tab.active-run { border-color: var(--blue); background: var(--blue-bg); color: var(--blue); }
+    .day-tab.active-run .dot { background: var(--blue); }
+    .day-tab.active-rest { border-color: #555; background: rgba(136,136,136,0.1); color: #888; }
+    .day-tab.active-rest .dot { background: #555; }
+
+    /* DAY CARD */
+    .day-card {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 14px;
+    }
+    .day-card.strength { background: #120d1a; border-color: rgba(233,69,96,0.2); }
+    .day-card.run { background: #0a1520; border-color: rgba(0,180,216,0.2); }
+    .day-card.rest { background: #111; border-color: #1e1e1e; }
+
+    .day-card-header {
+      padding: 16px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .day-card.strength .day-card-header { border-bottom: 1px solid rgba(233,69,96,0.15); }
+    .day-card.run .day-card-header { border-bottom: 1px solid rgba(0,180,216,0.15); }
+    .day-card.rest .day-card-header { border-bottom: none; }
+
+    .day-tag {
+      display: inline-block; font-size: 9px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 4px; margin-bottom: 5px;
+    }
+    .tag-strength { background: var(--red-bg); color: var(--red); }
+    .tag-run { background: var(--blue-bg); color: var(--blue); }
+    .tag-rest { background: rgba(136,136,136,0.1); color: #888; }
+
+    .day-duration { font-size: 10px; color: var(--dim); margin-left: 8px; }
+    .day-name { font-family: 'Barlow', sans-serif; font-size: 18px; font-weight: 700; }
+    .day-focus { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .day-emoji { font-size: 30px; }
+
+    /* EXERCISE LIST */
+    .exercise-list { padding: 8px 18px 4px; }
+    .exercise-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .exercise-row:last-child { border-bottom: none; }
+    .ex-name { font-size: 13px; font-weight: 500; color: var(--text); }
+    .ex-note { font-size: 10px; color: #555; margin-top: 2px; }
+    .ex-sets { font-size: 12px; font-weight: 500; text-align: right; }
+    .ex-sets.strength-accent { color: var(--red); }
+    .ex-rest { font-size: 10px; color: var(--dim); margin-top: 2px; text-align: right; }
+
+    .rest-message {
+      padding: 20px 18px; font-size: 12px; color: #555; text-align: center; line-height: 1.6;
+    }
+
+    /* PHASE CALLOUT */
+    .phase-callout {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .phase-callout p { font-size: 12px; color: #bbb; line-height: 1.7; }
+
+    /* NOTES */
+    .notes-toggle {
+      width: 100%; padding: 13px 16px;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 12px; color: var(--muted);
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      cursor: pointer; display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 8px; transition: border-color 0.2s;
+    }
+    .notes-toggle:hover { border-color: #444; }
+    .notes-body {
+      background: #0f0f0f; border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px;
+      display: none;
+    }
+    .notes-body.open { display: block; }
+    .note-row {
+      display: flex; gap: 10px;
+      padding-bottom: 10px; margin-bottom: 10px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .note-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .note-arrow { color: var(--red); font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+    .note-text { font-size: 11px; color: #aaa; line-height: 1.6; }
+
+    /* KB WEIGHTS BANNER */
+    .kb-banner {
+      background: rgba(233,69,96,0.06); border: 1px solid rgba(233,69,96,0.2);
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+      font-size: 11px; color: #bbb; display: flex; align-items: center; gap: 8px;
+    }
+    .kb-icon { font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="eyebrow">12-Week Program</div>
+    <h1 class="title">Strength +<br>Run Plan</h1>
+    <p class="subtitle">38yo · 89kg · 1.85m · Home KB (8 & 12kg) + Med Ball</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">3×</div><div class="stat-label">Strength</div></div>
+      <div class="stat"><div class="stat-val">2×</div><div class="stat-label">Run</div></div>
+      <div class="stat"><div class="stat-val">45m</div><div class="stat-label">Max/session</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="kb-banner">
+    <span class="kb-icon">🏋️</span>
+    <span>Equipment: 8kg + 12kg kettlebell · Medicine ball · Bodyweight</span>
+  </div>
+
+  <!-- Phase Selector -->
+  <div class="section-label">Select Phase</div>
+  <div class="phase-tabs">
+    <button class="phase-tab active" onclick="setPhase(0)">
+      Phase 1<div class="phase-tab-sub">Wks 1–4</div>
+    </button>
+    <button class="phase-tab" onclick="setPhase(1)">
+      Phase 2<div class="phase-tab-sub">Wks 5–8</div>
+    </button>
+    <button class="phase-tab" onclick="setPhase(2)">
+      Phase 3<div class="phase-tab-sub">Wks 9–12</div>
+    </button>
+  </div>
+
+  <!-- Day Selector -->
+  <div class="section-label">Day</div>
+  <div class="day-tabs">
+    <button class="day-tab active-strength" onclick="setDay('Mon')">Mon<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Tue')">Tue<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Wed')">Wed<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Thu')">Thu<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Fri')">Fri<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Sat')">Sat<div class="dot"></div></button>
+    <button class="day-tab" onclick="setDay('Sun')">Sun<div class="dot"></div></button>
+  </div>
+
+  <!-- Day Card -->
+  <div id="day-card"></div>
+
+  <!-- Phase Callout -->
+  <div class="phase-callout">
+    <div class="section-label" id="phase-callout-label">Phase 1 Focus</div>
+    <p id="phase-callout-text"></p>
+  </div>
+
+  <!-- Notes -->
+  <button class="notes-toggle" onclick="toggleNotes()">
+    <span>Program Notes</span><span id="notes-arrow">▼</span>
+  </button>
+  <div class="notes-body" id="notes-body">
+    <div class="note-row"><span class="note-arrow">→</span><span class="note-text">Warm up 5 min before every session: leg swings, hip circles, arm circles, 5 inchworms.</span></div>
+    <div class="note-row"><span class="note-arrow">→</span><span class="note-text">If you miss a session, don't double up — just continue the schedule.</span></div>
+    <div class="note-row"><span class="note-arrow">→</span><span class="note-text">Week 4, 8, 12 are deload weeks: drop sets by 1 and reduce run to 20 min easy.</span></div>
+    <div class="note-row"><span class="note-arrow">→</span><span class="note-text">Increase KB weight when the last set feels easy for 2 sessions in a row.</span></div>
+    <div class="note-row"><span class="note-arrow">→</span><span class="note-text">Sleep and recovery matter more than any session at your age.</span></div>
+  </div>
+
+</div>
+
+<script>
+const plan = {
+  Mon: {
+    type: "strength", label: "Strength A", duration: "35–40 min", focus: "Lower + Core",
+    phases: {
+      0: [
+        { ex: "KB Goblet Squat", sets: "3 × 10", rest: "60s", note: "12kg" },
+        { ex: "KB Single-Leg RDL", sets: "4 × 8/side", rest: "60s", note: "12kg — hinge back, flat back" },
+        { ex: "KB Deadlift", sets: "3 × 10", rest: "60s", note: "Both KBs (20kg) — pause at top" },
+        { ex: "Dead Bug", sets: "3 × 8/side", rest: "45s", note: "Slow & controlled" },
+      ],
+      1: [
+        { ex: "KB Goblet Squat", sets: "4 × 10", rest: "60s", note: "12kg" },
+        { ex: "KB Single-Leg RDL", sets: "4 × 10/side", rest: "60s", note: "12kg" },
+        { ex: "KB Deadlift", sets: "3 × 12", rest: "60s", note: "Both KBs (20kg) — slow 3s lower" },
+        { ex: "Hollow Body Hold", sets: "3 × 20–30s", rest: "45s", note: "" },
+      ],
+      2: [
+        { ex: "KB Goblet Squat", sets: "4 × 12", rest: "60s", note: "12kg" },
+        { ex: "KB Single-Leg RDL", sets: "4 × 12/side", rest: "60s", note: "12kg" },
+        { ex: "KB Deadlift", sets: "4 × 12", rest: "60s", note: "Both KBs (20kg) — slow 3s lower" },
+        { ex: "Hollow Body Hold", sets: "3 × 30–40s", rest: "45s", note: "" },
+      ],
+    }
+  },
+  Tue: { type: "run", label: "Easy Run", duration: "30 min", focus: "Zone 2 — conversational pace", phases: { 0: [], 1: [], 2: [] } },
+  Wed: {
+    type: "strength", label: "Strength B", duration: "35–40 min", focus: "Upper + Core",
+    phases: {
+      0: [
+        { ex: "Push-Up", sets: "3 × 10", rest: "60s", note: "Chest to floor" },
+        { ex: "KB Single-Arm Row", sets: "3 × 10/side", rest: "60s", note: "12kg — elbow past hip" },
+        { ex: "KB Overhead Press", sets: "3 × 8/side", rest: "60s", note: "8kg" },
+        { ex: "Med Ball Push-Up", sets: "2 × 8", rest: "60s", note: "" },
+        { ex: "Plank", sets: "3 × 30s", rest: "45s", note: "" },
+      ],
+      1: [
+        { ex: "Push-Up (feet elevated)", sets: "4 × 10", rest: "60s", note: "" },
+        { ex: "KB Single-Arm Row", sets: "4 × 10/side", rest: "60s", note: "12kg — elbow past hip" },
+        { ex: "KB Overhead Press", sets: "3 × 10/side", rest: "60s", note: "8kg or 12kg" },
+        { ex: "Med Ball Chest Pass (wall)", sets: "3 × 10", rest: "45s", note: "Explosive" },
+        { ex: "Side Plank", sets: "3 × 30s/side", rest: "45s", note: "" },
+      ],
+      2: [
+        { ex: "Push-Up (feet elevated)", sets: "4 × 12", rest: "60s", note: "" },
+        { ex: "KB Single-Arm Row", sets: "4 × 12/side", rest: "60s", note: "12kg — elbow past hip" },
+        { ex: "KB Overhead Press", sets: "4 × 10/side", rest: "60s", note: "12kg" },
+        { ex: "Med Ball Chest Pass (wall)", sets: "3 × 12", rest: "45s", note: "" },
+        { ex: "Copenhagen Plank", sets: "3 × 20s/side", rest: "45s", note: "Hip adductor — runner essential" },
+      ],
+    }
+  },
+  Thu: { type: "rest", label: "Rest / Walk", duration: "—", focus: "Active recovery or full rest", phases: { 0: [], 1: [], 2: [] } },
+  Fri: {
+    type: "strength", label: "Strength C", duration: "35–40 min", focus: "Full Body / Power",
+    phases: {
+      0: [
+        { ex: "KB Swing", sets: "4 × 12", rest: "60s", note: "12kg — master the hinge" },
+        { ex: "Reverse Lunge", sets: "3 × 10/side", rest: "60s", note: "Bodyweight" },
+        { ex: "KB Halo", sets: "3 × 8/direction", rest: "45s", note: "8kg — shoulder mobility" },
+        { ex: "Med Ball Squat + Press", sets: "3 × 10", rest: "60s", note: "" },
+        { ex: "Glute Bridge", sets: "3 × 15", rest: "45s", note: "Pause at top 2s" },
+      ],
+      1: [
+        { ex: "KB Swing", sets: "5 × 15", rest: "60s", note: "12kg" },
+        { ex: "KB Reverse Lunge", sets: "3 × 10/side", rest: "60s", note: "8kg" },
+        { ex: "KB Halo", sets: "3 × 10/direction", rest: "45s", note: "12kg" },
+        { ex: "Med Ball Squat + Press", sets: "3 × 12", rest: "60s", note: "" },
+        { ex: "Single-Leg Glute Bridge", sets: "3 × 12/side", rest: "45s", note: "" },
+      ],
+      2: [
+        { ex: "KB Swing (one-arm)", sets: "4 × 12/side", rest: "60s", note: "12kg" },
+        { ex: "KB Reverse Lunge", sets: "4 × 10/side", rest: "60s", note: "12kg" },
+        { ex: "KB Clean + Press", sets: "3 × 6/side", rest: "60s", note: "8kg — learn the movement" },
+        { ex: "Med Ball Squat + Press", sets: "3 × 12", rest: "60s", note: "Explosive" },
+        { ex: "Single-Leg Glute Bridge", sets: "3 × 15/side", rest: "45s", note: "" },
+      ],
+    }
+  },
+  Sat: { type: "run", label: "Longer Run", duration: "40–50 min", focus: "Easy/steady — build aerobic base", phases: { 0: [], 1: [], 2: [] } },
+  Sun: { type: "rest", label: "Full Rest", duration: "—", focus: "Recovery, sleep, family", phases: { 0: [], 1: [], 2: [] } },
+};
+
+const phaseText = [
+  "Build the movement patterns. Prioritise form over load. Use 8kg where control is needed, 12kg for lower body. Runs stay easy Zone 2.",
+  "Increase volume. Add sets. Push the 12kg on upper body. Runs stay aerobic — no hard efforts. This is where adaptation happens.",
+  "Consolidate strength gains. Introduce single-arm KB work and more power output. Runs can include one fartlek every 2 weeks if feeling good.",
+];
+
+let currentDay = "Mon";
+let currentPhase = 0;
+
+function setPhase(i) {
+  currentPhase = i;
+  document.querySelectorAll(".phase-tab").forEach((t, idx) => {
+    t.classList.toggle("active", idx === i);
+  });
+  document.getElementById("phase-callout-label").textContent = `Phase ${i+1} Focus`;
+  document.getElementById("phase-callout-text").textContent = phaseText[i];
+  renderCard();
+}
+
+function setDay(d) {
+  currentDay = d;
+  const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  document.querySelectorAll(".day-tab").forEach((t, idx) => {
+    const dtype = plan[days[idx]].type;
+    t.className = "day-tab";
+    if (days[idx] === d) t.classList.add(`active-${dtype}`);
+  });
+  renderCard();
+}
+
+function renderCard() {
+  const d = plan[currentDay];
+  const exercises = d.phases[currentPhase];
+  const accentColor = d.type === "strength" ? "var(--red)" : d.type === "run" ? "var(--blue)" : "#888";
+  const tagClass = `tag-${d.type}`;
+  const emoji = d.type === "strength" ? "🏋️" : d.type === "run" ? "🏃" : "😴";
+
+  let exHTML = "";
+  if (exercises && exercises.length > 0) {
+    exHTML = `<div class="exercise-list">` +
+      exercises.map(e => `
+        <div class="exercise-row">
+          <div>
+            <div class="ex-name">${e.ex}</div>
+            ${e.note ? `<div class="ex-note">${e.note}</div>` : ""}
+          </div>
+          <div>
+            <div class="ex-sets" style="color:${accentColor}">${e.sets}</div>
+            <div class="ex-rest">rest ${e.rest}</div>
+          </div>
+        </div>`).join("") +
+    `</div>`;
+  } else {
+    const msg = d.type === "run"
+      ? "Easy, conversational pace. No intervals.<br>Keep heart rate low — you should be able to talk."
+      : "Rest. Stretch if you want. Sleep early.<br>Recovery is where adaptation happens.";
+    exHTML = `<div class="rest-message">${msg}</div>`;
+  }
+
+  document.getElementById("day-card").innerHTML = `
+    <div class="day-card ${d.type}">
+      <div class="day-card-header">
+        <div>
+          <div>
+            <span class="day-tag ${tagClass}">${d.type}</span>
+            <span class="day-duration">${d.duration}</span>
+          </div>
+          <div class="day-name">${d.label}</div>
+          <div class="day-focus">${d.focus}</div>
+        </div>
+        <div class="day-emoji">${emoji}</div>
+      </div>
+      ${exHTML}
+    </div>`;
+}
+
+function toggleNotes() {
+  const body = document.getElementById("notes-body");
+  const arrow = document.getElementById("notes-arrow");
+  body.classList.toggle("open");
+  arrow.textContent = body.classList.contains("open") ? "▲" : "▼";
+}
+
+// Init
+setPhase(0);
+setDay("Mon");
+</script>
+</body>
+</html>
